@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lumpy"
+version = "0.1.0"
+description = "Very elegent. Very Lumpy."
+requires-python = ">=3.14"
+dependencies = ["numpy"]
+
+[tool.setuptools]
+packages = ["lumpy"]
