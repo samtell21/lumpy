@@ -36,3 +36,18 @@ def independent(A):
     Return True if the columns of A are linearly independent.
     """
     return rank(A) == A.shape[1]
+
+def row_space(A, tol=1e-12):
+    """
+    Return an orthonormal basis for the row space of A as columns.
+    """
+    return orth(A.T, tol=tol)
+
+
+def left_null(A, tol=1e-12):
+    """
+    Return an orthonormal basis for the left nullspace of A as columns.
+
+    This is Null(A.T).
+    """
+    return null(A.T, tol=tol)

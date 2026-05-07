@@ -20,7 +20,7 @@ From the project root:
 python -m pip install -e .
 ```
 
-## Basic Usage 
+## Basic usage 
 
 ```python
 import lumpy as la
@@ -73,6 +73,23 @@ v = la.vec(4, 5, 6)
 A = la.mat(u, v) 
 ```
 
+## Matrices from rows
+
+`mat()` constructs matrices from columns. Sometimes, though, it is useful to type a matrix in the same visual layout used on paper.
+
+```python
+A = la.matt(
+    [1, 2, 3],
+    [4, 5, 6]
+)
+
+A
+# array([[1., 2., 3.],
+#        [4., 5., 6.]])
+```
+
+```matt()``` preserves the usual visual layout of matrices, while ```mat()``` preserves Lumpy’s column-oriented semantics.
+
 ## Standard basis vectors 
 
 Lumpy uses Python-style zero-indexing.
@@ -105,7 +122,7 @@ la.norm(v)
 ```inner``` preserves matrix structure. 
 
 $$
-<\mathbf{u},\mathbf{v}> = [\mathbf{u}\cdot \mathbf{v}]\in \mathbb{R}^{1\times 1}
+\langle \mathbf{u},\mathbf{v} \rangle = [\mathbf{u}\cdot \mathbf{v}]\in \mathbb{R}^{1\times 1}
 $$
 
 ```dot``` returns a scalar. 
@@ -218,7 +235,27 @@ A @ N
 # approximately zero
 ```
 
-Lumpy returns bases as columns. 
+Lumpy returns subspace bases as columns.
+
+```python
+
+A = la.matt(
+    [1, 2, 3],
+    [2, 4, 6]
+)
+
+la.row_space(A)
+```
+
+The left nullspace is the nullspace of $A^{T}$:
+
+$$
+\operatorname{Null}\left(A^{T}\right)
+$$
+
+```python
+la.left_null(A)
+```
 
 ## SVD 
 
@@ -234,6 +271,8 @@ For full ambient bases:
 U, s, Vt = la.svd(A, full_matrices=True)
 ```
 
+Many Lumpy subspace functions use a numerical tolerance, defaulting to `tol=1e-12`, to decide which singular values count as nonzero.
+
 ## Geometry 
 
 ```python 
@@ -245,6 +284,38 @@ la.angle(u, v)
 
 la.dist(u, v)
 # 1.4142135623730951
+```
+
+## Solving systems
+
+Prefer `solve()` over explicitly computing an inverse.
+
+```python
+
+A = la.matt(
+    [2, 0],
+    [0, 3]
+)
+
+b = la.vec(4, 9)
+la.solve(A, b)
+
+# array([[2.],
+#        [3.]])
+```
+
+For overdetermined systems, use least squares:
+
+```python
+A = la.matt(
+    [1, 1],
+    [1, 2],
+    [1, 3]
+)
+
+b = la.vec(1, 2, 2)
+
+la.lstsq(A, b)
 ```
 
 ## Running tests 

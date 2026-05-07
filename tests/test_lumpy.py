@@ -57,6 +57,40 @@ def test_mat_mixed_inputs():
 
     assert_close(A, expected)
 
+def test_matt_from_rows():
+    A = la.matt(
+        [1, 2, 3],
+        [4, 5, 6]
+    )
+
+    expected = np.array([
+        [1, 2, 3],
+        [4, 5, 6]
+    ], dtype=float)
+
+    assert_close(A, expected)
+
+def test_mat_rejects_mismatched_columns():
+    try:
+        la.mat([1, 2, 3], [4, 5])
+
+    except ValueError:
+        pass
+
+    else:
+        raise AssertionError("mat() should reject mismatched column lengths")
+
+
+def test_mat_rejects_empty_input():
+    try:
+        la.mat()
+
+    except ValueError:
+        pass
+
+    else:
+        raise AssertionError("mat() should require at least one column")
+
 
 def test_eye():
     assert_close(
@@ -322,6 +356,29 @@ def test_null():
         np.array([[1.0]])
     )
 
+def test_row_space():
+    A = la.matt(
+        [1, 2, 3],
+        [2, 4, 6]
+    )
+
+    R = la.row_space(A)
+
+    assert R.shape == (3, 1)
+    assert_close(R.T @ R, np.array([[1.0]]))
+
+
+def test_left_null():
+    A = la.matt(
+        [1, 2],
+        [2, 4],
+        [3, 6]
+    )
+
+    L = la.left_null(A)
+
+    assert_close(A.T @ L, np.zeros((2, L.shape[1])))
+
 
 # =========================
 # Geometry
@@ -430,3 +487,37 @@ def test_svd_full_matrices():
     assert U.shape == (2, 2)
 
     assert Vt.shape == (2, 2)
+
+# =========================
+# Equations
+# =========================
+
+def test_solve():
+    A = la.matt(
+        [2, 0],
+        [0, 3]
+    )
+
+    b = la.vec(4, 9)
+
+    x = la.solve(A, b)
+
+    assert_close(x, la.vec(2, 3))
+
+def test_lstsq():
+    A = la.matt(
+        [1, 1],
+        [1, 2],
+        [1, 3]
+    )
+
+    b = la.vec(1, 2, 2)
+
+    x = la.lstsq(A, b)
+
+    assert x.shape == (2, 1)
+
+    # Least-squares residual should be orthogonal to Col(A)
+    r = b - A @ x
+
+    assert_close(A.T @ r, np.zeros((2, 1)))

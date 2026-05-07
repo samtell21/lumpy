@@ -4,10 +4,12 @@ lumpy/
 ├── core.py
 ├── spaces.py
 ├── geometry.py
-└── decompositions.py
+├── decompositions.py
+└── equations.py
 
 # constructors.py
 mat
+matt
 vec
 eye 
 e 
@@ -40,8 +42,11 @@ unit
 # decompositions.py
 svd
 
+# equations.py
+solve
+lstsq
+
 # from numpy.linalg
 qr
 eig
 inv
-solve
