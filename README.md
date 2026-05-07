@@ -250,7 +250,7 @@ la.row_space(A)
 The left nullspace is the nullspace of $A^{T}$:
 
 $$
-\operatorname{Null}\left(A^{T}\right)
+\mathrm{Null}\left(A^{T}\right)
 $$
 
 ```python
