@@ -14,10 +14,8 @@ NumPy is excellent, but its core abstraction is the n-dimensional array, not the
 
 ## Installation
 
-From the project root:
-
 ```bash
-python -m pip install -e .
+pip install lumpy-la
 ```
 
 ## Basic usage 

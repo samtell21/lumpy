@@ -18,3 +18,14 @@ dist/
 
 # macOS
 .DS_Store
+
+# Coverage
+.coverage
+htmlcov/
+
+# VSCode
+.vscode/
+
+# mypy / pyright
+.mypy_cache/
+.pyright/
