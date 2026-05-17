@@ -11,20 +11,19 @@ lumpy/
 mat
 matt
 vec
-eye 
+eye   # I = eye is a paper-like alias, not in __all__ (not pulled by `import *`)
 e 
 diag 
 
 # core.py
 col
 row
+outer
 inner
 dot
 norm
-T
 tr
 adj
-det
 
 # spaces.py
 rank
@@ -50,3 +49,5 @@ lstsq
 qr
 eig
 inv
+pinv
+det

@@ -101,6 +101,17 @@ la.e(3, 0)
 
 So ```la.e(n, i)``` corresponds to the mathematical basis vector $\mathbf{e}_{i+1}\in \mathbb{R}^{n}$ .
 
+## Identity 
+
+```python
+la.eye(3)
+# array([[1., 0., 0.],
+#        [0., 1., 0.],
+#        [0., 0., 1.]])
+```
+
+`la.I` is the same function — a paper-like alias for `eye`. It is reachable as `la.I`, but deliberately not exported by `from lumpy import *`, so the single-letter name `I` is never bound in your namespace unless you ask for it.
+
 ## Basic operations
 
 ```python
@@ -120,14 +131,16 @@ la.norm(v)
 ```inner``` preserves matrix structure. 
 
 $$
-\langle \mathbf{u},\mathbf{v} \rangle = [\mathbf{u}\cdot \mathbf{v}]\in \mathbb{R}^{1\times 1}
+\langle \mathbf{u},\mathbf{v} \rangle = [\mathbf{u}\cdot \mathbf{v}]\in \mathbb{C}^{1\times 1}
 $$
 
 ```dot``` returns a scalar. 
 
 $$
-\mathbf{u} \cdot  \mathbf{v} \in \mathbb{R}
+\mathbf{u} \cdot  \mathbf{v} \in \mathbb{C}
 $$
+
+For real input the result is real, since $\mathbb{R}\subset\mathbb{C}$; over $\mathbb{C}$ both use the conjugate transpose (the Hermitian inner product).
 
 ## Unit vectors and normalization 
 
@@ -260,6 +273,11 @@ la.left_null(A)
 By default, Lumpy's SVD returns only rank-relevant singular directions:
 
 ```python 
+A = la.mat(
+    [1, 0],
+    [2, 0]
+)
+
 U, s, Vt = la.svd(A)
 ```
 
@@ -269,7 +287,17 @@ For full ambient bases:
 U, s, Vt = la.svd(A, full_matrices=True)
 ```
 
-Many Lumpy subspace functions use a numerical tolerance, defaulting to `tol=1e-12`, to decide which singular values count as nonzero.
+Many Lumpy subspace functions (`rank`, `orth`, `null`, `proj`, `svd`, …) need to decide which singular values count as nonzero. By default this uses a **relative, scale-invariant** tolerance — a singular value is treated as zero when it falls below `max(s) * eps * max(m, n)` (the same rule as `numpy.linalg.matrix_rank`). Because both the singular values and the cutoff scale with `A`, the rank decision is unaffected by rescaling:
+
+```python
+la.rank(A) == la.rank(1e8 * A)   # True
+```
+
+Pass an explicit number as `tol` for an absolute cutoff instead:
+
+```python
+la.rank(A, tol=1e-9)             # absolute threshold
+```
 
 ## Geometry 
 
@@ -315,6 +343,25 @@ b = la.vec(1, 2, 2)
 
 la.lstsq(A, b)
 ```
+
+## Complex vectors and matrices
+
+Lumpy is correct over both ℝ and ℂ. `inner`, `dot`, `outer`, `proj`, `null`, `row_space`, and `left_null` use the conjugate transpose (`adj`), which reduces to the ordinary transpose for real input — so real code is unchanged while complex code does the right thing (e.g. `dot(u, u)` is real and nonnegative).
+
+Constructors auto-upcast: `la.vec(1, 2, 3)` is `float64`, `la.vec(1+2j, 3)` is `complex128`. Pass `dtype=None` to defer to NumPy's inference, or an explicit dtype to force one.
+
+Because ⟨u, v⟩ is complex, `angle` takes a `kind`:
+
+```python
+u = la.vec(1 + 1j, 2)
+v = la.vec(1j, 1)
+
+la.angle(u, v)                   # "re": arccos(Re⟨u,v⟩/(‖u‖‖v‖)), range [0, π]
+la.angle(u, v, kind="hermitian") # angle between the complex lines, range [0, π/2]
+la.angle(u, v, kind="branch")    # "re" for real input, "hermitian" for complex
+```
+
+`"re"` is the default: it equals the ordinary angle for real input and depends only on the vectors' values, never on whether they are stored as real or complex.
 
 ## Running tests 
 

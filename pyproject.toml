@@ -1,13 +1,28 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "lumpy-la"
-version = "0.1.1"
+version = "1.0.0"
 description = "Very elegant. Very Lumpy."
+readme = "README.md"
 requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Sam Tell", email = "samtell21@gmail.com" }]
 dependencies = ["numpy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+[project.urls]
+Homepage = "https://github.com/samtell21/lumpy"
 
 [tool.setuptools]
 packages = ["lumpy"]
